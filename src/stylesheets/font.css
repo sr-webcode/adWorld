@@ -7,6 +7,7 @@ h2.ant-typography {
 }
 h3.ant-typography {
   font-size: 40px !important;
+  font-weight: 800 !important;
 }
 h5.ant-typography {
   font-size: 26px !important;
