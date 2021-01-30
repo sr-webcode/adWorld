@@ -2,9 +2,10 @@ import { useState } from "react";
 import cx from "classnames";
 import styled from "styled-components";
 import { Collapse, Typography, Row, Col, Checkbox } from "antd";
+import { ArrowRightOutlined } from "@ant-design/icons";
 
+import { HeadIcon } from "utils/iconUtils";
 import { IAdEvents } from "types/adWorld";
-import { HeadIcon, ArrowIcon } from "utils/iconUtils";
 
 interface ITrackEventProps {
   events: IAdEvents[];
@@ -18,8 +19,8 @@ const StyledCollapse = styled(Collapse)`
   .ant-collapse-item:first-child {
     border-top: 1px solid #d9d9d9 !important;
   }
-  .panel {
-    transition: transform 0.12s linear;
+  .arrow-icon {
+    transition: transform 0.1s ease;
   }
   .active {
     transform: rotate(-90deg);
@@ -53,26 +54,45 @@ const StyledCheckBox = styled(Checkbox)<{ bgColor: string }>`
   }
 `;
 const StyledHeader = styled.div`
+  ${(props: { bgColor: string; islight: boolean }) => `
   min-height: 108px;
+  position: relative;
   align-items: center;
   padding: 0 !important;
-  padding: 0 70px !important;
-  ${(props: { bgColor: string; islight: boolean }) => `
-    &:hover {
+  padding: 0 70px !important; 
+  &:hover {
       background-color: ${props.bgColor};
+      .banner-header {
+        transform: translateY(-26px);
+        transition: transform 0.1s ease;
+      }
       .white-text {
         color: ${!props.islight && "#FFFFFF !important"};
-      }
-      .marquee-para {
+      }   
+      .marquee-para {  
         display: block !important;
+        color: ${!props.islight && "#FFFFFF !important"};
+        transition: transform 0.60s linear;
+        animation: bannerText 8.20s linear forwards;
       }
     }
   `}
+  @keyframes bannerText {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-40%);
+    }
+  }
+`;
+const StyledMarqueeText = styled(Paragraph)`
+  bottom: 0;
+  white-space: nowrap;
 `;
 
 const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
   const [activePanels, setActivePanels] = useState<string[]>([]);
-  const [activeHoverEvent, setActiveHoverEvent] = useState("");
   const onChangePanels = (key: string | string[]) => {
     if (key instanceof Array) setActivePanels(key);
   };
@@ -85,11 +105,6 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
   const panelIsActive = (index: number) => {
     return activePanels.includes(index.toString());
   };
-
-  // const onPanelHeaderHover = (e: React.MouseEvent) => {
-  //   const eventTargetName = e.currentTarget.getAttribute("data-event") || "";
-  //   setActiveHoverEvent(eventTargetName);
-  // };
 
   return (
     <StyledCollapse
@@ -106,40 +121,33 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
             key={idx.toString()}
             header={
               <StyledHeader
+                data-event={title}
                 islight={isLight || false}
                 bgColor={!panelIsActive(idx) ? bgColor : ""}
                 className="d-flex flex-column justify-content-center align-items-start"
               >
-                <div className="w-100 d-flex justify-content-between">
+                <div className="w-100 ">
                   <Title
                     level={3}
                     className={cx({
-                      "m-0 text-uppercase": true,
-                      "white-text": !panelIsActive(idx),
+                      "m-0 text-uppercase d-flex justify-content-between align-items-center w-100": true,
+                      "white-text banner-header": !panelIsActive(idx),
                     })}
                   >
                     {title}
-                  </Title>
-                  <span
-                    className={cx({
-                      "d-flex align-items-center panel": true,
-                      active: panelIsActive(idx),
-                      inactive: !panelIsActive(idx),
-                    })}
-                  >
-                    <ArrowIcon
-                      fillWhite={
-                        !panelIsActive(idx) &&
-                        activeHoverEvent === title &&
-                        !isLight
-                      }
+                    <ArrowRightOutlined
+                      className={cx({
+                        "arrow-icon": true,
+                        active: panelIsActive(idx),
+                        inactive: !panelIsActive(idx),
+                      })}
                     />
-                  </span>
+                  </Title>
                 </div>
-                {!panelIsActive && (
-                  <Paragraph className="d-none fs-18 text-uppercase white-text marquee-para">
+                {!panelIsActive(idx) && (
+                  <StyledMarqueeText className="d-none text-uppercase marquee-para position-absolute fs-24">
                     {description}
-                  </Paragraph>
+                  </StyledMarqueeText>
                 )}
               </StyledHeader>
             }
