@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Collapse, Typography, Row, Col, Checkbox } from "antd";
 
 import { IAdEvents } from "types/adWorld";
+import { HeadIcon } from "utils/iconUtils";
 
 interface ITrackEventProps {
   events: IAdEvents[];
@@ -85,9 +86,14 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
               </Title>
               <div className="list">
                 {meet.map((each, idx) => (
-                  <Paragraph className="fs-18 m-0 mb-1" key={idx}>
-                    {each.text}
-                  </Paragraph>
+                  <div key={idx} className="d-flex align-items-center">
+                    <span className="mr-2">
+                      <HeadIcon bgColor={bgColor} />
+                    </span>
+                    <Paragraph className="fs-18 m-0 mb-1" key={idx}>
+                      {each.text}
+                    </Paragraph>
+                  </div>
                 ))}
               </div>
             </Col>

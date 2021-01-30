@@ -4,7 +4,6 @@ import { Typography } from "antd";
 
 import { IAdEvents } from "types/adWorld";
 import TrackEvents from "components/TrackEvents";
-import { ArrowIcon } from "utils/icons/adWorld";
 
 const { Title } = Typography;
 const StyledHeader = styled.div`
@@ -35,7 +34,6 @@ const App = () => {
         <Title level={2} className="m-0 mb-3">
           EXPLORE AD WORLD TRACKS
         </Title>
-        <ArrowIcon />
         <Title level={5} className="m-0">
           IT'S LIKE 13 EVENTS IN ONE.
         </Title>
