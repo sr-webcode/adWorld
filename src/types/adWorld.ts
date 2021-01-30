@@ -9,4 +9,5 @@ export interface IAdEvents {
   meet: TListData[];
   learn: TListData[];
   description: string;
+  isLight: boolean;
 }

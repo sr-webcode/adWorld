@@ -14,6 +14,7 @@ const { Panel } = Collapse;
 const { Title, Paragraph } = Typography;
 const StyledCollapse = styled(Collapse)`
   cursor: pointer;
+  overflow: hidden;
   .ant-collapse-item:first-child {
     border-top: 1px solid #d9d9d9 !important;
   }
@@ -30,18 +31,13 @@ const StyledCollapse = styled(Collapse)`
 const StyledPanel = styled(Panel)<{ bgColor: string }>`
   .ant-collapse-header {
     padding: 0 !important;
-    min-height: 108px;
-    display: flex;
-    align-items: center;
-    padding: 0 70px !important;
   }
   .ant-collapse-content-box {
     padding: 0;
     .ant-row {
-      padding: 0 70px !important;
+      padding: 0 70px 40px !important;
     }
   }
-
   border-left: 16px solid ${(props) => props.bgColor};
 `;
 const StyledCheckBox = styled(Checkbox)<{ bgColor: string }>`
@@ -56,9 +52,28 @@ const StyledCheckBox = styled(Checkbox)<{ bgColor: string }>`
     }
   }
 `;
+const StyledHeader = styled.div`
+  display: flex;
+  min-height: 108px;
+  align-items: center;
+  padding: 0 !important;
+  padding: 0 70px !important;
+  ${(props: { bgColor: string; isLight: boolean }) => `
+    ${
+      Boolean(props.bgColor) &&
+      `
+      background-color: ${props.bgColor};
+      h3.ant-typography {
+        color: ${!props.isLight ? "#FFFFFF !important" : ""};
+      }
+    `
+    }         
+  `};
+`;
 
 const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
   const [activePanels, setActivePanels] = useState<string[]>([]);
+  const [activeHoverEvent, setActiveHoverEvent] = useState("");
   const onChangePanels = (key: string | string[]) => {
     if (key instanceof Array) setActivePanels(key);
   };
@@ -71,6 +86,10 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
   const panelIsActive = (index: number) => {
     return activePanels.includes(index.toString());
   };
+  const onPanelHeaderHover = (e: React.MouseEvent) => {
+    const eventTargetName = e.currentTarget.getAttribute("data-event") || "";
+    setActiveHoverEvent(eventTargetName);
+  };
 
   return (
     <StyledCollapse
@@ -80,12 +99,21 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
       onChange={onChangePanels}
       activeKey={activePanels}
     >
-      {events.map(({ meet, title, learn, bgColor }, idx) => (
+      {events.map(({ meet, title, learn, bgColor, isLight }, idx) => (
         <StyledPanel
-          key={idx.toString()}
           bgColor={bgColor}
+          key={idx.toString()}
           header={
-            <div className="w-100 d-flex justify-content-between">
+            <StyledHeader
+              isLight={isLight}
+              data-event={title}
+              onMouseOver={onPanelHeaderHover}
+              onMouseOut={() => setActiveHoverEvent("")}
+              className="w-100 d-flex justify-content-between"
+              bgColor={
+                activeHoverEvent !== title || panelIsActive(idx) ? "" : bgColor
+              }
+            >
               <Title level={3} className="m-0 text-uppercase">
                 {title}
               </Title>
@@ -96,9 +124,15 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
                   inactive: !panelIsActive(idx),
                 })}
               >
-                <ArrowIcon />
+                <ArrowIcon
+                  fillWhite={
+                    !panelIsActive(idx) &&
+                    activeHoverEvent === title &&
+                    !isLight
+                  }
+                />
               </span>
-            </div>
+            </StyledHeader>
           }
         >
           <Row gutter={32} onClick={() => removeActivePanel(idx)}>

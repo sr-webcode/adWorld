@@ -1,4 +1,6 @@
-export const ArrowIcon = () => (
+export const ArrowIcon: React.FC<{ fillWhite?: boolean }> = ({
+  fillWhite = false,
+}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="48"
@@ -9,7 +11,7 @@ export const ArrowIcon = () => (
   >
     <path
       d="M31.5625 2.375L46.1875 17L31.5625 31.625"
-      stroke="#13174C"
+      stroke={fillWhite ? "#FFFFFF" : "#13174C"}
       strokeWidth="2.925px"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -17,7 +19,7 @@ export const ArrowIcon = () => (
     ></path>
     <path
       d="M46.1875 17H2.3125"
-      stroke="#13174C"
+      stroke={fillWhite ? "#FFFFFF" : "#13174C"}
       strokeWidth="2.925px"
       strokeLinecap="round"
       strokeLinejoin="round"
