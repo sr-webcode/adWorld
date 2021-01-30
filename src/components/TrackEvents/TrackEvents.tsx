@@ -29,6 +29,18 @@ const StyledPanel = styled(Panel)<{ bgColor: string }>`
   padding: 0 70px !important;
   border-left: 16px solid ${(props) => props.bgColor};
 `;
+const StyledCheckBox = styled(Checkbox)<{ bgColor: string }>`
+  .ant-checkbox-checked .ant-checkbox-inner {
+    background-color: ${(props) => props.bgColor};
+    width: 23px;
+    height: 23px;
+    border: none;
+    &::after {
+      width: 8px;
+      height: 14px;
+    }
+  }
+`;
 
 const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
   return (
@@ -56,8 +68,12 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
               </Title>
               <div className="list">
                 {learn.map((each, idx) => (
-                  <div key={idx} className="d-flex align-items-center">
-                    <Checkbox checked />
+                  <div key={idx} className="d-flex align-items-center mb-2">
+                    <StyledCheckBox
+                      checked
+                      className="mr-2"
+                      bgColor={bgColor}
+                    />
                     <Paragraph className="fs-18 mb-0">{each.text}</Paragraph>
                   </div>
                 ))}

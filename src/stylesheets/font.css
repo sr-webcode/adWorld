@@ -1,5 +1,6 @@
 .ant-typography {
   color: #13174c !important;
+  line-height: 1.2;
 }
 h2.ant-typography {
   font-size: 60px !important;
