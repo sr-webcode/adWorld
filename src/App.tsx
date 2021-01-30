@@ -37,7 +37,7 @@ const App = () => {
   return (
     <div>
       <StyledHeader className="text-center">
-        <Title level={lg ? 2 : 3} className={cx({ "m-0": true, " mb-3": sm })}>
+        <Title level={lg ? 2 : 3} className={cx({ "m-0 px-2": true, " mb-3": sm })}>
           EXPLORE AD WORLD TRACKS
         </Title>
         <Title level={4} className={cx({ "m-0": true, "d-none": !sm })}>
