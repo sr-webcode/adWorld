@@ -1,7 +1,7 @@
 import { useState } from "react";
 import cx from "classnames";
 import styled from "styled-components";
-import { Collapse, Typography, Row, Col, Checkbox } from "antd";
+import { Collapse, Typography, Row, Col, Checkbox, Grid } from "antd";
 import { ArrowRightOutlined } from "@ant-design/icons";
 
 import { HeadIcon } from "utils/iconUtils";
@@ -12,6 +12,7 @@ interface ITrackEventProps {
 }
 
 const { Panel } = Collapse;
+const { useBreakpoint } = Grid;
 const { Title, Paragraph } = Typography;
 const StyledCollapse = styled(Collapse)`
   cursor: pointer;
@@ -37,33 +38,62 @@ const StyledPanel = styled(Panel)<{ bgColor: string }>`
     padding: 0;
     .ant-row {
       padding: 0 70px 40px !important;
+      @media (max-width: 950px) {
+        padding: 0 40px 20px !important;
+      }
+      @media (max-width: 760px) {
+        padding: 0 20px 20px !important;
+      }
     }
   }
   border-left: 16px solid ${(props) => props.bgColor};
+  @media (max-width: 760px) {
+    border-left: 8px solid ${(props) => props.bgColor};
+  }
 `;
 const StyledCheckBox = styled(Checkbox)<{ bgColor: string }>`
   .ant-checkbox-checked .ant-checkbox-inner {
     background-color: ${(props) => props.bgColor};
     width: 23px;
     height: 23px;
+    @media (max-width: 760px) {
+      width: 16px;
+      height: 16px;
+    }
     border: none;
     &::after {
       width: 8px;
       height: 14px;
+      @media (max-width: 760px) {
+        width: 6px;
+        height: 10px;
+      }
     }
   }
 `;
 const StyledHeader = styled.div`
   ${(props: { bgColor: string; islight: boolean }) => `
+  @media (max-width: 950px){
+    min-height: 70px;
+  }
   min-height: 108px;
   position: relative;
   align-items: center;
   padding: 0 !important;
   padding: 0 70px !important; 
+  @media (max-width: 950px){
+   padding: 0 40px !important; 
+  }
+  @media (max-width: 760px){
+   padding: 0 20px !important; 
+  }
   &:hover {
       background-color: ${props.bgColor};
-      .banner-header {
+      .banner-header {            
         transform: translateY(-26px);
+         @media (max-width: 950px){
+           transform: translateY(-16px);
+        }
         transition: transform 0.1s ease;
       }
       .white-text {
@@ -92,6 +122,7 @@ const StyledMarqueeText = styled(Paragraph)`
 `;
 
 const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
+  const { sm, md, lg } = useBreakpoint();
   const [activePanels, setActivePanels] = useState<string[]>([]);
   const onChangePanels = (key: string | string[]) => {
     if (key instanceof Array) setActivePanels(key);
@@ -105,6 +136,8 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
   const panelIsActive = (index: number) => {
     return activePanels.includes(index.toString());
   };
+
+  console.log(md);
 
   return (
     <StyledCollapse
@@ -128,7 +161,7 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
               >
                 <div className="w-100 ">
                   <Title
-                    level={3}
+                    level={!lg ? (md ? 4 : 5) : 3}
                     className={cx({
                       "m-0 text-uppercase d-flex justify-content-between align-items-center w-100": true,
                       "white-text banner-header": !panelIsActive(idx),
@@ -145,7 +178,13 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
                   </Title>
                 </div>
                 {!panelIsActive(idx) && (
-                  <StyledMarqueeText className="d-none text-uppercase marquee-para position-absolute fs-24">
+                  <StyledMarqueeText
+                    className={cx({
+                      "d-none text-uppercase marquee-para position-absolute ": true,
+                      "fs-24": lg,
+                      "fs-16": md,
+                    })}
+                  >
                     {description}
                   </StyledMarqueeText>
                 )}
@@ -154,7 +193,7 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
           >
             <Row gutter={32} onClick={() => removeActivePanel(idx)}>
               <Col xs={24} md={12}>
-                <Title level={5} className="m-0 mb-2">
+                <Title level={!lg ? 5 : 4} className="m-0 mb-2">
                   WHAT YOU WILL LEARN:
                 </Title>
                 <div className="list">
@@ -165,13 +204,21 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
                         className="mr-2"
                         bgColor={bgColor}
                       />
-                      <Paragraph className="fs-18 mb-0">{each.text}</Paragraph>
+                      <Paragraph
+                        className={cx({
+                          "m-0 mb-1": true,
+                          "fs-18": lg,
+                          "fs-16": md,
+                        })}
+                      >
+                        {each.text}
+                      </Paragraph>
                     </div>
                   ))}
                 </div>
               </Col>
-              <Col xs={24} md={12}>
-                <Title level={5} className="m-0 mb-2">
+              <Col xs={24} md={12} className={cx({ "mt-4": sm && !md })}>
+                <Title level={!lg ? 5 : 4} className="m-0 mb-2">
                   WHO YOU WILL MEET:
                 </Title>
                 <div className="list">
@@ -180,7 +227,14 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
                       <span className="mr-2">
                         <HeadIcon bgColor={bgColor} />
                       </span>
-                      <Paragraph className="fs-18 m-0 mb-1" key={idx}>
+                      <Paragraph
+                        className={cx({
+                          "m-0 mb-1": true,
+                          "fs-18": lg,
+                          "fs-16": md,
+                        })}
+                        key={idx}
+                      >
                         {each.text}
                       </Paragraph>
                     </div>

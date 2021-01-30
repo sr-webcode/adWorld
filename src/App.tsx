@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+import cx from "classnames";
 import styled from "styled-components";
-import { Typography, Spin } from "antd";
+import { Typography, Spin, Grid } from "antd";
 
 import { IAdEvents } from "types/adWorld";
 import TrackEvents from "components/TrackEvents";
 
 const { Title } = Typography;
+const { useBreakpoint } = Grid;
 const StyledHeader = styled.div`
   padding-top: 70px;
   margin-bottom: 50px;
@@ -13,6 +15,7 @@ const StyledHeader = styled.div`
 
 const App = () => {
   const [loading, setLoading] = useState(false);
+  const { sm, lg } = useBreakpoint();
   const [trackEvents, setTrackEvents] = useState<IAdEvents[]>([]);
   const fetchAdEvents = async () => {
     setLoading(true);
@@ -34,10 +37,10 @@ const App = () => {
   return (
     <div>
       <StyledHeader className="text-center">
-        <Title level={2} className="m-0 mb-3">
+        <Title level={lg ? 2 : 3} className={cx({ "m-0": true, " mb-3": sm })}>
           EXPLORE AD WORLD TRACKS
         </Title>
-        <Title level={5} className="m-0">
+        <Title level={4} className={cx({ "m-0": true, "d-none": !sm })}>
           IT'S LIKE 13 EVENTS IN ONE.
         </Title>
       </StyledHeader>
