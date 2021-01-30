@@ -53,22 +53,21 @@ const StyledCheckBox = styled(Checkbox)<{ bgColor: string }>`
   }
 `;
 const StyledHeader = styled.div`
-  display: flex;
   min-height: 108px;
   align-items: center;
   padding: 0 !important;
   padding: 0 70px !important;
-  ${(props: { bgColor: string; isLight: boolean }) => `
-    ${
-      Boolean(props.bgColor) &&
-      `
+  ${(props: { bgColor: string; islight: boolean }) => `
+    &:hover {
       background-color: ${props.bgColor};
-      h3.ant-typography {
-        color: ${!props.isLight ? "#FFFFFF !important" : ""};
+      .white-text {
+        color: ${!props.islight && "#FFFFFF !important"};
       }
-    `
-    }         
-  `};
+      .marquee-para {
+        display: block !important;
+      }
+    }
+  `}
 `;
 
 const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
@@ -86,10 +85,11 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
   const panelIsActive = (index: number) => {
     return activePanels.includes(index.toString());
   };
-  const onPanelHeaderHover = (e: React.MouseEvent) => {
-    const eventTargetName = e.currentTarget.getAttribute("data-event") || "";
-    setActiveHoverEvent(eventTargetName);
-  };
+
+  // const onPanelHeaderHover = (e: React.MouseEvent) => {
+  //   const eventTargetName = e.currentTarget.getAttribute("data-event") || "";
+  //   setActiveHoverEvent(eventTargetName);
+  // };
 
   return (
     <StyledCollapse
@@ -99,80 +99,90 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
       onChange={onChangePanels}
       activeKey={activePanels}
     >
-      {events.map(({ meet, title, learn, bgColor, isLight }, idx) => (
-        <StyledPanel
-          bgColor={bgColor}
-          key={idx.toString()}
-          header={
-            <StyledHeader
-              isLight={isLight}
-              data-event={title}
-              onMouseOver={onPanelHeaderHover}
-              onMouseOut={() => setActiveHoverEvent("")}
-              className="w-100 d-flex justify-content-between"
-              bgColor={
-                activeHoverEvent !== title || panelIsActive(idx) ? "" : bgColor
-              }
-            >
-              <Title level={3} className="m-0 text-uppercase">
-                {title}
-              </Title>
-              <span
-                className={cx({
-                  "d-flex align-items-center panel": true,
-                  active: panelIsActive(idx),
-                  inactive: !panelIsActive(idx),
-                })}
+      {events.map(
+        ({ meet, title, learn, bgColor, isLight, description }, idx) => (
+          <StyledPanel
+            bgColor={bgColor}
+            key={idx.toString()}
+            header={
+              <StyledHeader
+                islight={isLight || false}
+                bgColor={!panelIsActive(idx) ? bgColor : ""}
+                className="d-flex flex-column justify-content-center align-items-start"
               >
-                <ArrowIcon
-                  fillWhite={
-                    !panelIsActive(idx) &&
-                    activeHoverEvent === title &&
-                    !isLight
-                  }
-                />
-              </span>
-            </StyledHeader>
-          }
-        >
-          <Row gutter={32} onClick={() => removeActivePanel(idx)}>
-            <Col xs={24} md={12}>
-              <Title level={5} className="m-0 mb-2">
-                WHAT YOU WILL LEARN:
-              </Title>
-              <div className="list">
-                {learn.map((each, idx) => (
-                  <div key={idx} className="d-flex align-items-center mb-2">
-                    <StyledCheckBox
-                      checked
-                      className="mr-2"
-                      bgColor={bgColor}
+                <div className="w-100 d-flex justify-content-between">
+                  <Title
+                    level={3}
+                    className={cx({
+                      "m-0 text-uppercase": true,
+                      "white-text": !panelIsActive(idx),
+                    })}
+                  >
+                    {title}
+                  </Title>
+                  <span
+                    className={cx({
+                      "d-flex align-items-center panel": true,
+                      active: panelIsActive(idx),
+                      inactive: !panelIsActive(idx),
+                    })}
+                  >
+                    <ArrowIcon
+                      fillWhite={
+                        !panelIsActive(idx) &&
+                        activeHoverEvent === title &&
+                        !isLight
+                      }
                     />
-                    <Paragraph className="fs-18 mb-0">{each.text}</Paragraph>
-                  </div>
-                ))}
-              </div>
-            </Col>
-            <Col xs={24} md={12}>
-              <Title level={5} className="m-0 mb-2">
-                WHO YOU WILL MEET:
-              </Title>
-              <div className="list">
-                {meet.map((each, idx) => (
-                  <div key={idx} className="d-flex align-items-center">
-                    <span className="mr-2">
-                      <HeadIcon bgColor={bgColor} />
-                    </span>
-                    <Paragraph className="fs-18 m-0 mb-1" key={idx}>
-                      {each.text}
-                    </Paragraph>
-                  </div>
-                ))}
-              </div>
-            </Col>
-          </Row>
-        </StyledPanel>
-      ))}
+                  </span>
+                </div>
+                {!panelIsActive && (
+                  <Paragraph className="d-none fs-18 text-uppercase white-text marquee-para">
+                    {description}
+                  </Paragraph>
+                )}
+              </StyledHeader>
+            }
+          >
+            <Row gutter={32} onClick={() => removeActivePanel(idx)}>
+              <Col xs={24} md={12}>
+                <Title level={5} className="m-0 mb-2">
+                  WHAT YOU WILL LEARN:
+                </Title>
+                <div className="list">
+                  {learn.map((each, idx) => (
+                    <div key={idx} className="d-flex align-items-center mb-2">
+                      <StyledCheckBox
+                        checked
+                        className="mr-2"
+                        bgColor={bgColor}
+                      />
+                      <Paragraph className="fs-18 mb-0">{each.text}</Paragraph>
+                    </div>
+                  ))}
+                </div>
+              </Col>
+              <Col xs={24} md={12}>
+                <Title level={5} className="m-0 mb-2">
+                  WHO YOU WILL MEET:
+                </Title>
+                <div className="list">
+                  {meet.map((each, idx) => (
+                    <div key={idx} className="d-flex align-items-center">
+                      <span className="mr-2">
+                        <HeadIcon bgColor={bgColor} />
+                      </span>
+                      <Paragraph className="fs-18 m-0 mb-1" key={idx}>
+                        {each.text}
+                      </Paragraph>
+                    </div>
+                  ))}
+                </div>
+              </Col>
+            </Row>
+          </StyledPanel>
+        )
+      )}
     </StyledCollapse>
   );
 };
