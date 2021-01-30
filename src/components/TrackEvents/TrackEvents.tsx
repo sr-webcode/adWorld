@@ -12,8 +12,8 @@ interface ITrackEventProps {
 
 const { Panel } = Collapse;
 const { Title, Paragraph } = Typography;
-
 const StyledCollapse = styled(Collapse)`
+  cursor: pointer;
   .ant-collapse-item:first-child {
     border-top: 1px solid #d9d9d9 !important;
   }
@@ -33,12 +33,15 @@ const StyledPanel = styled(Panel)<{ bgColor: string }>`
     min-height: 108px;
     display: flex;
     align-items: center;
+    padding: 0 70px !important;
   }
   .ant-collapse-content-box {
-    padding: 0 !important;
-    padding-bottom: 40px !important;
+    padding: 0;
+    .ant-row {
+      padding: 0 70px !important;
+    }
   }
-  padding: 0 70px !important;
+
   border-left: 16px solid ${(props) => props.bgColor};
 `;
 const StyledCheckBox = styled(Checkbox)<{ bgColor: string }>`
@@ -59,16 +62,23 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
   const onChangePanels = (key: string | string[]) => {
     if (key instanceof Array) setActivePanels(key);
   };
+  const removeActivePanel = (index: number) => {
+    const filteredPanels = activePanels.filter(
+      (panelIdx) => panelIdx !== index.toString()
+    );
+    setActivePanels(filteredPanels);
+  };
   const panelIsActive = (index: number) => {
     return activePanels.includes(index.toString());
   };
 
   return (
     <StyledCollapse
-      className="bg-white"
       bordered={false}
+      className="bg-white"
       expandIcon={() => <span />}
       onChange={onChangePanels}
+      activeKey={activePanels}
     >
       {events.map(({ meet, title, learn, bgColor }, idx) => (
         <StyledPanel
@@ -91,7 +101,7 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
             </div>
           }
         >
-          <Row gutter={32}>
+          <Row gutter={32} onClick={() => removeActivePanel(idx)}>
             <Col xs={24} md={12}>
               <Title level={5} className="m-0 mb-2">
                 WHAT YOU WILL LEARN:
