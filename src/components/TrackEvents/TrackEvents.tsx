@@ -1,8 +1,10 @@
+import { useState } from "react";
+import cx from "classnames";
 import styled from "styled-components";
 import { Collapse, Typography, Row, Col, Checkbox } from "antd";
 
 import { IAdEvents } from "types/adWorld";
-import { HeadIcon } from "utils/iconUtils";
+import { HeadIcon, ArrowIcon } from "utils/iconUtils";
 
 interface ITrackEventProps {
   events: IAdEvents[];
@@ -14,6 +16,15 @@ const { Title, Paragraph } = Typography;
 const StyledCollapse = styled(Collapse)`
   .ant-collapse-item:first-child {
     border-top: 1px solid #d9d9d9 !important;
+  }
+  .panel {
+    transition: transform 0.12s linear;
+  }
+  .active {
+    transform: rotate(-90deg);
+  }
+  .inactive {
+    transform: rotate(0);
   }
 `;
 const StyledPanel = styled(Panel)<{ bgColor: string }>`
@@ -44,21 +55,39 @@ const StyledCheckBox = styled(Checkbox)<{ bgColor: string }>`
 `;
 
 const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
+  const [activePanels, setActivePanels] = useState<string[]>([]);
+  const onChangePanels = (key: string | string[]) => {
+    if (key instanceof Array) setActivePanels(key);
+  };
+  const panelIsActive = (index: number) => {
+    return activePanels.includes(index.toString());
+  };
+
   return (
     <StyledCollapse
       className="bg-white"
       bordered={false}
       expandIcon={() => <span />}
+      onChange={onChangePanels}
     >
       {events.map(({ meet, title, learn, bgColor }, idx) => (
         <StyledPanel
           key={idx.toString()}
           bgColor={bgColor}
           header={
-            <div>
+            <div className="w-100 d-flex justify-content-between">
               <Title level={3} className="m-0 text-uppercase">
                 {title}
               </Title>
+              <span
+                className={cx({
+                  "d-flex align-items-center panel": true,
+                  active: panelIsActive(idx),
+                  inactive: !panelIsActive(idx),
+                })}
+              >
+                <ArrowIcon />
+              </span>
             </div>
           }
         >
