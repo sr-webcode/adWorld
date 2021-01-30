@@ -13,7 +13,7 @@ interface ITrackEventProps {
 
 const { Panel } = Collapse;
 const { useBreakpoint } = Grid;
-const { Title, Paragraph } = Typography;
+const { Title, Paragraph, Text } = Typography;
 const StyledCollapse = styled(Collapse)`
   cursor: pointer;
   overflow: hidden;
@@ -122,7 +122,7 @@ const StyledMarqueeText = styled(Paragraph)`
 `;
 
 const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
-  const { sm, md, lg } = useBreakpoint();
+  const { md, lg } = useBreakpoint();
   const [activePanels, setActivePanels] = useState<string[]>([]);
   const onChangePanels = (key: string | string[]) => {
     if (key instanceof Array) setActivePanels(key);
@@ -136,8 +136,6 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
   const panelIsActive = (index: number) => {
     return activePanels.includes(index.toString());
   };
-
-  console.log(md);
 
   return (
     <StyledCollapse
@@ -193,9 +191,16 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
           >
             <Row gutter={32} onClick={() => removeActivePanel(idx)}>
               <Col xs={24} md={12}>
-                <Title level={!lg ? 5 : 4} className="m-0 mb-2">
-                  WHAT YOU WILL LEARN:
-                </Title>
+                {!md ? (
+                  <Text className="mb-2 d-block sub-title">
+                    WHAT YOU WILL LEARN:
+                  </Text>
+                ) : (
+                  <Title level={!lg ? 5 : 4} className="m-0 mb-2">
+                    WHAT YOU WILL LEARN:
+                  </Title>
+                )}
+
                 <div className="list">
                   {learn.map((each, idx) => (
                     <div key={idx} className="d-flex align-items-center mb-2">
@@ -217,10 +222,16 @@ const TrackEvents: React.FC<ITrackEventProps> = ({ events }) => {
                   ))}
                 </div>
               </Col>
-              <Col xs={24} md={12} className={cx({ "mt-4": sm && !md })}>
-                <Title level={!lg ? 5 : 4} className="m-0 mb-2">
-                  WHO YOU WILL MEET:
-                </Title>
+              <Col xs={24} md={12} className={cx({ "mt-4": !md })}>
+                {!md ? (
+                  <Text className="mb-2 d-block sub-title">
+                    WHO YOU WILL MEET:
+                  </Text>
+                ) : (
+                  <Title level={!lg ? 5 : 4} className="m-0 mb-2">
+                    WHO YOU WILL MEET:
+                  </Title>
+                )}
                 <div className="list">
                   {meet.map((each, idx) => (
                     <div key={idx} className="d-flex align-items-center">
